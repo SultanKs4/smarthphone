@@ -12,32 +12,42 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import id.natlus.phonbun.R;
-import id.natlus.phonbun.models.Phone;
+import id.natlus.phonbun.db.PhoneEntity;
 
 public class PhoneAdapter extends RecyclerView.Adapter<PhoneAdapter.PhoneViewHolder> {
-    private List<Phone> phoneList = new ArrayList<>();
+    private Context context;
+    private List<PhoneEntity> phoneEntityList;
+
+    public PhoneAdapter(Context context) {
+        this.context = context;
+    }
+
+    public List<PhoneEntity> getPhoneEntityList() {
+        return phoneEntityList;
+    }
+
+    public void setPhoneList(List<PhoneEntity> phoneList) {
+        this.phoneEntityList = phoneList;
+
+        notifyDataSetChanged();
+    }
 
     private OnPhoneClickListener listener;
     public interface OnPhoneClickListener{
         public void onClick(View view, int position);
+
     }
 
     public void setListener(OnPhoneClickListener listener) {
         this.listener = listener;
     }
 
-    public PhoneAdapter(List<Phone> phoneList) {
-        this.phoneList = phoneList;
-    }
-
     @NonNull
     @Override
     public PhoneViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View phoneView = layoutInflater.inflate(R.layout.item_phone, parent, false);
         PhoneViewHolder viewHolder = new PhoneViewHolder(phoneView);
@@ -46,18 +56,21 @@ public class PhoneAdapter extends RecyclerView.Adapter<PhoneAdapter.PhoneViewHol
 
     @Override
     public void onBindViewHolder(@NonNull PhoneViewHolder holder, int position) {
-        Phone item = phoneList.get(position);
-        holder.price.setText(item.getPrice());
-        holder.type.setText(item.getType());
-        holder.detail.setText(item.getDetail());
-        Picasso.get().load(item.getImage())
-                .placeholder(R.drawable.ic_launcher_background)
+        PhoneEntity itemEntity = phoneEntityList.get(position);
+        holder.price.setText(itemEntity.getPrice());
+        holder.type.setText(itemEntity.getType());
+        holder.detail.setText(itemEntity.getDetail());
+        Picasso.get().load(itemEntity.getImage())
+                .placeholder(R.color.colorWhite)
                 .into(holder.imagePhone);
     }
 
     @Override
     public int getItemCount() {
-        return phoneList.size();
+        if(this.phoneEntityList == null)
+            return 0;
+        else
+            return phoneEntityList.size();
     }
 
     public class PhoneViewHolder extends RecyclerView.ViewHolder {

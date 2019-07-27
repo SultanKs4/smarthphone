@@ -6,7 +6,7 @@ import android.os.Parcelable;
 public class Phone implements Parcelable {
     private String type, price, image, detail;
 
-    protected Phone(Parcel in) {
+    private Phone(Parcel in) {
         type = in.readString();
         price = in.readString();
         image = in.readString();

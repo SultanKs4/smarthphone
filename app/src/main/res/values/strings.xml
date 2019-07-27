@@ -49,18 +49,6 @@
         <item>iPhone Xs</item>
         <item>iPhone Xs Max</item>
     </string-array>
-    <string-array name="detail_phone">
-        <item>Black Color, 128GB ROM, 6GB RAM</item>
-        <item>Just Black Color, 128GB ROM, 4GB RAM</item>
-        <item>Prism Green Color, 1TB ROM, 12GB RAM</item>
-        <item>Breathing Crystal Color, 512GB ROM, 8GB RAM</item>
-        <item>Ocean Blue Color, 256GB ROM, 8GB RAM</item>
-        <item>Midnight Black Color, 256GB ROM, 8GB RAM</item>
-        <item>Almond Color, 256GB ROM, 12GB RAM</item>
-        <item>(PRODUCT)RED™ Color, 256GB ROM, 3GB RAM</item>
-        <item>Space Grey Color, 256GB ROM, 4GB RAM</item>
-        <item>Gold Color, 512GB ROM, 4 GB RAM</item>
-    </string-array>
     <string-array name="price_phone">
         <item>15.000.000</item>
         <item>13.000.000</item>
@@ -84,6 +72,18 @@
         <item>https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone/xr/iphone-xr-red-select-201809?wid=470&amp;hei=556&amp;fmt=png-alpha&amp;.v=1551226038669</item>
         <item>https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone/xs/iphone-xs-space-select-2018?wid=940&amp;hei=1112&amp;fmt=png-alpha&amp;qlt=80&amp;.v=1550795411619</item>
         <item>https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/image/AppleInc/aos/published/images/i/ph/iphone/xs/iphone-xs-gold-select-2018?wid=940&amp;hei=1112&amp;fmt=png-alpha&amp;qlt=80&amp;.v=1550795410474</item>
+    </string-array>
+    <string-array name="detail_phone">
+        <item>Black Color, 128GB ROM, 6GB RAM</item>
+        <item>Just Black Color, 128GB ROM, 4GB RAM</item>
+        <item>Prism Green Color, 1TB ROM, 12GB RAM</item>
+        <item>Breathing Crystal Color, 512GB ROM, 8GB RAM</item>
+        <item>Ocean Blue Color, 256GB ROM, 8GB RAM</item>
+        <item>Midnight Black Color, 256GB ROM, 8GB RAM</item>
+        <item>Almond Color, 256GB ROM, 12GB RAM</item>
+        <item>(PRODUCT)RED™ Color, 256GB ROM, 3GB RAM</item>
+        <item>Space Grey Color, 256GB ROM, 4GB RAM</item>
+        <item>Gold Color, 512GB ROM, 4 GB RAM</item>
     </string-array>
     <string-array name="full_detail_brand">
         <item>SONY</item>
