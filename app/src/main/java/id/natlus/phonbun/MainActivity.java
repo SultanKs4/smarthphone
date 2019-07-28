@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity implements PhoneAdapter.OnPh
         Intent i = new Intent(MainActivity.this, OptionActivity.class);
         i.putExtra(Key_RegisterActivity, phoneEntity);
         startActivity(i);
-        Toast.makeText(getApplicationContext(), phoneEntity.getType(), Toast.LENGTH_SHORT).show();
     }
 
     public void refresh(View view) {

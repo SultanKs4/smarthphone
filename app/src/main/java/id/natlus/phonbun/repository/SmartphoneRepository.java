@@ -3,21 +3,19 @@ package id.natlus.phonbun.repository;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.List;
-
-import javax.net.ssl.HttpsURLConnection;
 
 import id.natlus.phonbun.db.AppDBProvider;
 import id.natlus.phonbun.db.AppDatabase;
+import id.natlus.phonbun.db.CheckoutDao;
+import id.natlus.phonbun.db.CheckoutEntity;
 import id.natlus.phonbun.db.PhoneDao;
 import id.natlus.phonbun.db.PhoneEntity;
 import id.natlus.phonbun.remoteservice.AppServiceProvider;
+import id.natlus.phonbun.remoteservice.CheckoutService;
 import id.natlus.phonbun.remoteservice.PhoneService;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -26,14 +24,17 @@ import retrofit2.Response;
 public class SmartphoneRepository {
     private AppDatabase database;
     private PhoneService service;
+    private CheckoutService checkoutService;
     private LiveData<List<PhoneEntity>> phoneList;
+    private LiveData<List<CheckoutEntity>> checkoutList;
 
     // Loading indicator untuk ditampilkan saat menyimpan data
     ProgressDialog loadingIndicator;
 
     public SmartphoneRepository(Context context) {
-        this.database = AppDBProvider.getInstance(context);
-        this.service = AppServiceProvider.getPhoneService();
+        database = AppDBProvider.getInstance(context);
+        service = AppServiceProvider.getPhoneService();
+        checkoutService = AppServiceProvider.getCheckoutService();
     }
 
     private boolean isOnline(){
@@ -53,6 +54,79 @@ public class SmartphoneRepository {
 //        }
         return available;
     }
+
+
+    public void saveCheckout(CheckoutEntity checkoutEntity){
+        if (this.isOnline()){
+            this.saveCheckoutToWeb(checkoutEntity);
+        } else {
+            this.saveCheckoutToDb(checkoutEntity);
+        }
+    }
+
+    private void saveCheckoutToDb(CheckoutEntity checkoutEntity) {
+//        save contact asyncron
+        new SaveCheckoutTask().execute(checkoutEntity);
+
+    }
+
+    private void saveCheckoutToWeb(CheckoutEntity checkoutEntity) {
+        Call<CheckoutEntity> checkoutCall = checkoutService.postCheckout(checkoutEntity);
+
+        checkoutCall.enqueue(new Callback<CheckoutEntity>() {
+            @Override
+            public void onResponse(Call<CheckoutEntity> call, Response<CheckoutEntity> response) {
+                getCheckoutListFromWeb();
+            }
+
+            @Override
+            public void onFailure(Call<CheckoutEntity> call, Throwable t) {
+
+            }
+        });
+    }
+
+    public LiveData<List<CheckoutEntity>> getCheckoutList(){
+        if (isOnline()){
+            getCheckoutListFromDB();
+            getCheckoutListFromWeb();
+        } else {
+            getCheckoutListFromDB();
+        }
+        return checkoutList;
+    }
+
+    private void getCheckoutListFromDB() {
+        CheckoutDao checkoutDao = database.checkoutDao();
+
+        checkoutList = checkoutDao.getCheckout();
+    }
+
+    private void getCheckoutListFromWeb(){
+        Call<List<CheckoutEntity>> checkoutListAll = checkoutService.getCheckout();
+
+        checkoutListAll.enqueue(new Callback<List<CheckoutEntity>>() {
+            @Override
+            public void onResponse(Call<List<CheckoutEntity>> call, Response<List<CheckoutEntity>> response) {
+                new RemoveCheckoutTask().execute();
+                List<CheckoutEntity> checkoutEntities = response.body();
+
+                CheckoutEntity[] arrCheckout = new CheckoutEntity[checkoutEntities.size()];
+
+                for (int i = 0; i < arrCheckout.length; i++) {
+                    arrCheckout[i] = checkoutEntities.get(i);
+                }
+
+                new SaveCheckoutTask().execute(arrCheckout);
+            }
+
+            @Override
+            public void onFailure(Call<List<CheckoutEntity>> call, Throwable t) {
+
+            }
+        });
+    }
+
 
     public LiveData<List<PhoneEntity>> getPhoneList(){
         if (isOnline()){
@@ -95,16 +169,20 @@ public class SmartphoneRepository {
         });
     }
 
+    public PhoneEntity findByType(String type){
+
+        return phoneEntity;
+    }
+
     //    Inner class
     private class SavePhoneTask extends AsyncTask<PhoneEntity, Void, Void> {
 
         @Override
-        protected Void doInBackground(PhoneEntity... contacts) {
+        protected Void doInBackground(PhoneEntity... phoneEntities) {
             PhoneDao dao = database.phoneDao();
 
-//            Get multiple contacts
-            for (PhoneEntity contact : contacts) {
-                dao.insert(contact);
+            for (PhoneEntity phoneEntity : phoneEntities) {
+                dao.insert(phoneEntity);
             }
 
             return null;
@@ -118,6 +196,48 @@ public class SmartphoneRepository {
 //            Remove all
             database.phoneDao().removeAll();
             return null;
+        }
+    }
+
+    private class SaveCheckoutTask extends AsyncTask<CheckoutEntity, Void, Void> {
+
+        @Override
+        protected Void doInBackground(CheckoutEntity... checkoutEntities) {
+            CheckoutDao dao = database.checkoutDao();
+
+            for (CheckoutEntity checkoutEntity : checkoutEntities) {
+                dao.checkout(checkoutEntity);
+            }
+
+            return null;
+        }
+    }
+
+    private class RemoveCheckoutTask extends AsyncTask<Void, Void, Void>{
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+//            Remove all
+            database.checkoutDao().removeAllCheckout();
+            return null;
+        }
+    }
+
+
+    private class GetPhoneByTypeTask extends AsyncTask<String, Void, PhoneEntity>{
+        @Override
+        protected PhoneEntity doInBackground(String... strings) {
+            PhoneDao dao = database.phoneDao();
+            PhoneEntity phoneEntity = null;
+            for (String string : strings) {
+                phoneEntity = dao.findByType(string);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(PhoneEntity phoneEntity) {
+            super.onPostExecute(phoneEntity);
         }
     }
 }

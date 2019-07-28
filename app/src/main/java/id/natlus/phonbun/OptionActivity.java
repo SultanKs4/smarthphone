@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import id.natlus.phonbun.db.CheckoutEntity;
 import id.natlus.phonbun.db.PhoneEntity;
 import id.natlus.phonbun.models.Checkout;
 
@@ -81,19 +82,26 @@ public class OptionActivity extends AppCompatActivity {
         else if (editTextAddress.getText().toString().trim().length() <= 10)
             Toast.makeText(view.getContext(), "Address must at least 10 character", Toast.LENGTH_SHORT).show();
         else {
-            String name = editTextName.getText().toString().trim();
-            String address = editTextAddress.getText().toString().trim();
-            String PhoneNumber = editTextPhone.getText().toString().trim();
-            String email = editTextEmail.getText().toString().trim();
-            String payment = paymentSpinner.getSelectedItem().toString().trim();
 
-            Checkout checkout = new Checkout(phone.getType(), phone.getPrice(), phone.getImage(),
-                    phone.getDetail(), name, address, PhoneNumber, email, payment);
+            CheckoutEntity checkoutEntity = makeCheckout();
 
             Intent i = new Intent(OptionActivity.this, CheckoutActivity.class);
-            i.putExtra(Key_RegisterActivity, checkout);
+            i.putExtra(Key_RegisterActivity, checkoutEntity);
             startActivity(i);
         }
+    }
+
+    private CheckoutEntity makeCheckout() {
+        String name = editTextName.getText().toString().trim();
+        String address = editTextAddress.getText().toString().trim();
+        String PhoneNumber = editTextPhone.getText().toString().trim();
+        String email = editTextEmail.getText().toString().trim();
+        String type = resultType.getText().toString().trim();
+        String payment = paymentSpinner.getSelectedItem().toString().trim();
+
+        CheckoutEntity checkoutEntity = new CheckoutEntity(name, address, PhoneNumber, email, payment, type);
+
+        return checkoutEntity;
     }
 
     public static boolean isValidEmail(CharSequence email) {
