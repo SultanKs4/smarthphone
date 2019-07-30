@@ -12,6 +12,6 @@ public interface CheckoutService {
     @GET("/smartphone/api.php/checkout")
     Call<List<CheckoutEntity>> getCheckout();
 
-    @POST("/bukukontak_service/api.php/checkout")
+    @POST("/smartphone/api.php/checkout")
     Call<CheckoutEntity> postCheckout(@Body CheckoutEntity checkoutEntity);
 }

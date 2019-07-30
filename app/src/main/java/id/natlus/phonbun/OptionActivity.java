@@ -2,6 +2,7 @@ package id.natlus.phonbun;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -28,7 +29,6 @@ public class OptionActivity extends AppCompatActivity {
     String fullDetailDisplay, fullDetailHardware;
     EditText editTextName, editTextAddress, editTextPhone, editTextEmail;
     Spinner paymentSpinner;
-
 
     private void initComponents(){
         resultType = findViewById(R.id.option_typeText);
@@ -82,11 +82,12 @@ public class OptionActivity extends AppCompatActivity {
         else if (editTextAddress.getText().toString().trim().length() <= 10)
             Toast.makeText(view.getContext(), "Address must at least 10 character", Toast.LENGTH_SHORT).show();
         else {
-
             CheckoutEntity checkoutEntity = makeCheckout();
-
             Intent i = new Intent(OptionActivity.this, CheckoutActivity.class);
             i.putExtra(Key_RegisterActivity, checkoutEntity);
+            i.putExtra("phone_Detail", phone.getDetail());
+            i.putExtra("phone_Price", phone.getPrice());
+            i.putExtra("phone_Image", phone.getImage());
             startActivity(i);
         }
     }

@@ -33,23 +33,20 @@ public class AppServiceProvider {
     }
 
     public static PhoneService getPhoneService(){
-        if (phoneService == null){
+        HttpLoggingInterceptor httpLogging = new HttpLoggingInterceptor();
+        httpLogging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-            HttpLoggingInterceptor httpLogging = new HttpLoggingInterceptor();
-            httpLogging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        if(!httpClient.interceptors().contains(httpLogging))
+            httpClient.addInterceptor(httpLogging);
 
-            OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-            if(!httpClient.interceptors().contains(httpLogging))
-                httpClient.addInterceptor(httpLogging);
+        Retrofit.Builder builder = new Retrofit.Builder();
+        builder.baseUrl(AppServiceProvider.BASE_URL);
+        builder.addConverterFactory(GsonConverterFactory.create());
+        builder.client(httpClient.build());
 
-            Retrofit.Builder builder = new Retrofit.Builder();
-            builder.baseUrl(AppServiceProvider.BASE_URL);
-            builder.addConverterFactory(GsonConverterFactory.create());
-            builder.client(httpClient.build());
-
-            Retrofit retrofit = builder.build();
-            phoneService = retrofit.create(PhoneService.class);
-        }
+        Retrofit retrofit = builder.build();
+        phoneService = retrofit.create(PhoneService.class);
         return phoneService;
     }
 }

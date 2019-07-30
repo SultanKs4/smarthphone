@@ -33,6 +33,11 @@
     <string name="home">home</string>
     <string name="rp">Rp</string>
     <string name="splash_subTitle">Buy Smarthone seamlessly \nWith NTT Docomo Japan</string>
+    <string name="refresh">refresh</string>
+    <string name="buying_history">Buying History</string>
+    <string name="history">History</string>
+    <string name="no_data_history">Sorry seems you don\'t have  history buying phone</string>
+    <string name="payment">Payment:</string>
     <string-array name="payment_method">
         <item>Cash</item>
         <item>Virtual Account Billing</item>

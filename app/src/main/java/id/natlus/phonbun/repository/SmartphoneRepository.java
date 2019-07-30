@@ -3,6 +3,10 @@ package id.natlus.phonbun.repository;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.SystemClock;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 
@@ -26,10 +30,8 @@ public class SmartphoneRepository {
     private PhoneService service;
     private CheckoutService checkoutService;
     private LiveData<List<PhoneEntity>> phoneList;
+    private PhoneEntity phoneEntity;
     private LiveData<List<CheckoutEntity>> checkoutList;
-
-    // Loading indicator untuk ditampilkan saat menyimpan data
-    ProgressDialog loadingIndicator;
 
     public SmartphoneRepository(Context context) {
         database = AppDBProvider.getInstance(context);
@@ -122,7 +124,7 @@ public class SmartphoneRepository {
 
             @Override
             public void onFailure(Call<List<CheckoutEntity>> call, Throwable t) {
-
+                Log.e("ERROR_GetCheckoutList", t.getMessage());
             }
         });
     }
@@ -164,14 +166,47 @@ public class SmartphoneRepository {
 
             @Override
             public void onFailure(Call<List<PhoneEntity>> call, Throwable t) {
-
+                Log.e("ERROR_GetPhoneList", t.getMessage());
             }
         });
     }
 
     public PhoneEntity findByType(String type){
-
+        if (isOnline()){
+            getPhoneByTypeFromDB(type);
+        } else {
+            getPhoneByTypeFromDB(type);
+        }
         return phoneEntity;
+    }
+
+    private void getPhoneByTypeFromWeb(String type) {
+        String url = "/smartphone/get_api.php?type=\"" + type + "\"";
+        Call<List<PhoneEntity>> phoneByType = this.service.getPhones();
+
+        phoneByType.enqueue(new Callback<List<PhoneEntity>>() {
+            @Override
+            public void onResponse(Call<List<PhoneEntity>> call, Response<List<PhoneEntity>> response) {
+                List<PhoneEntity> phoneEntities = response.body();
+
+                for (int i = 0; i < phoneEntities.size(); i++) {
+                    String typeCheck = phoneEntities.get(i).getType();
+                    if (type.equals(typeCheck)){
+                        phoneEntity = phoneEntities.get(i);
+                        break;
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<PhoneEntity>> call, Throwable t) {
+                Log.e("ERROR_GetPhoneByType", t.getMessage());
+            }
+        });
+    }
+
+    private void getPhoneByTypeFromDB(String type) {
+        new GetPhoneByTypeTask().execute(type);
     }
 
     //    Inner class
@@ -223,15 +258,11 @@ public class SmartphoneRepository {
         }
     }
 
-
     private class GetPhoneByTypeTask extends AsyncTask<String, Void, PhoneEntity>{
         @Override
         protected PhoneEntity doInBackground(String... strings) {
             PhoneDao dao = database.phoneDao();
-            PhoneEntity phoneEntity = null;
-            for (String string : strings) {
-                phoneEntity = dao.findByType(string);
-            }
+            phoneEntity = dao.findByType(strings[0]);
             return null;
         }
 

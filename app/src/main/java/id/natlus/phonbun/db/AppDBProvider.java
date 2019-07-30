@@ -14,4 +14,12 @@ public class AppDBProvider {
         }
         return ourInstance;
     }
+
+    public static AppDatabase getInstanceInline(Context context) {
+        if (ourInstance == null){
+            ourInstance = Room.databaseBuilder(context,
+                    AppDatabase.class, "app_database_db").allowMainThreadQueries().build();
+        }
+        return ourInstance;
+    }
 }

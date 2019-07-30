@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity implements PhoneAdapter.OnPh
     public RecyclerView recyclerView;
     public PhoneAdapter phoneAdapter;
     private MainViewModel mainViewModel;
+    private TextView history;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,11 +37,20 @@ public class MainActivity extends AppCompatActivity implements PhoneAdapter.OnPh
         recyclerView = findViewById(R.id.rvPhone);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(phoneAdapter);
+        history = findViewById(R.id.main_tv_log_buy);
 
         mainViewModel.getPhoneList().observe(this, new Observer<List<PhoneEntity>>() {
             @Override
             public void onChanged(List<PhoneEntity> phoneEntities) {
                 phoneAdapter.setPhoneList(phoneEntities);
+            }
+        });
+
+        history.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(MainActivity.this, HistoryActivity.class);
+                startActivity(i);
             }
         });
     }
