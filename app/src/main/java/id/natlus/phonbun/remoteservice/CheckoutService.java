@@ -9,9 +9,9 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 public interface CheckoutService {
-    @GET("/smartphone/api.php/checkout")
+    @GET("/SultanKs4/smartphone/checkout")
     Call<List<CheckoutEntity>> getCheckout();
 
-    @POST("/smartphone/api.php/checkout")
+    @POST("/SultanKs4/smartphone/checkout")
     Call<CheckoutEntity> postCheckout(@Body CheckoutEntity checkoutEntity);
 }

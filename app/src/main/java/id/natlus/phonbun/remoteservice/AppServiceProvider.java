@@ -6,7 +6,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AppServiceProvider {
-    private static final String BASE_URL = "http://192.168.40.5/";
+    private static final String BASE_URL = "https://my-json-server.typicode.com";
 
     private static PhoneService phoneService;
     private static CheckoutService checkoutService;

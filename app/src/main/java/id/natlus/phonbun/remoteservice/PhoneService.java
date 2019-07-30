@@ -8,7 +8,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Url;
 
 public interface PhoneService {
-    @GET("/smartphone/api.php/phones")
+    @GET("/SultanKs4/smartphone/data")
     Call<List<PhoneEntity>> getPhones();
 
     @GET

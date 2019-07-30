@@ -60,9 +60,9 @@ public class SmartphoneRepository {
 
     public void saveCheckout(CheckoutEntity checkoutEntity){
         if (this.isOnline()){
-            this.saveCheckoutToWeb(checkoutEntity);
+            saveCheckoutToDb(checkoutEntity);
         } else {
-            this.saveCheckoutToDb(checkoutEntity);
+            saveCheckoutToDb(checkoutEntity);
         }
     }
 
@@ -91,7 +91,6 @@ public class SmartphoneRepository {
     public LiveData<List<CheckoutEntity>> getCheckoutList(){
         if (isOnline()){
             getCheckoutListFromDB();
-            getCheckoutListFromWeb();
         } else {
             getCheckoutListFromDB();
         }
